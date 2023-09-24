@@ -3,7 +3,7 @@
 
 
 
-healthcare data visualization portal aimed at providing insightful and intuitive visual representations of healthcare data. The platform empowers healthcare professionals and stakeholders to make informed decisions based on a visual analysis of complex healthcare data.
+Healthcare data visualization portal aimed at providing insightful and intuitive visual representations of healthcare data. The platform empowers healthcare professionals and stakeholders to make informed decisions based on a visual analysis of complex healthcare data.
 
 ## Project Objectives
 
@@ -34,7 +34,7 @@ Transforms complex healthcare data into visually appealing and easy-to-understan
 
 - HTML, CSS, JavaScript
 - D3.js,chart.js (Data-Driven Documents)
-- ReactJS (or technology of choice for the frontend)
+- ReactJS (Frontend)
 
 
 
