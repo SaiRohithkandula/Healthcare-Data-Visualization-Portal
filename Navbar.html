@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Data Visualization Portal</title>
+    <style>
+        /* CSS styles remain the same as in the original code */
+        /* ... */
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Healthcare Data Visualization Portal</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#patient-record" onclick="updatePatientRecordContent()">Patient Record</a></li>
+            <li><a href="#visualization">Visualization</a></li>
+            <li><a href="#resources">Resources</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="dashboard">
+            <h2>Dashboard</h2>
+            <div id="dashboard-content">
+                This is the dashboard content.
+            </div>
+        </section>
+
+        <section id="patient-record">
+            <h2>Patient Record</h2>
+            <div id="patient-record-content" class="patient-details">
+                <!-- Content will be updated dynamically -->
+            </div>
+        </section>
+
+        <section id="visualization">
+            <h2>Visualization</h2>
+            <div id="visualization-content">
+                This is the visualization content.
+            </div>
+        </section>
+
+        <section id="resources">
+            <h2>Resources</h2>
+            <div id="resources-content">
+                This is the resources content.
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Healthcare Data Visualization Portal</p>
+    </footer>
+
+    <script>
+        // Function to update the patient record content
+        function updatePatientRecordContent() {
+            const patientRecordContent = `
+                <p>1. Patient Name: John Doe</p>
+                <p>2. Patient Disease: Respiratory Infection</p>
+                <p>3. Room Number: 305</p>
+                <p>4. Number of days admitted: 5</p>
+                <p>5. Drugs/Medicines: Antibiotics, Inhaler</p>
+                <p>6. Doctor Name: Dr. Smith</p>
+                <p>7. Patient Treatment costs: $5000</p>
+                <p>8. Hospital Staff: Nurse Johnson, Technician Davis</p>
+            `;
+
+            document.getElementById('patient-record-content').innerHTML = patientRecordContent;
+        }
+
+        // Example JavaScript code to load content into each section
+        document.getElementById('dashboard-content').innerHTML = 'This is the dashboard content.';
+        document.getElementById('visualization-content').innerHTML = 'This is the visualization content.';
+        document.getElementById('resources-content').innerHTML = 'This is the resources content.';
+    </script>
+</body>
+</html>
