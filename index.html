@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Gender Pie Chart</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #f0f0f0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #3498db;
+        }
+        .container {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px;
+        }
+        .chart-container {
+            margin: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+   
+
+    <div class="container">
+        <button onclick="toggleDataView()">Upload CSV Dataset</button>
+    </div>
+
+    <div id="dataContainer" class="hidden">
+        <div class="container">
+            <input type="file" id="csvFile" accept=".csv">
+            <button onclick="handleFile()">Upload</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="genderPieChart" width="400" height="400"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="diseasePieChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <!-- Include Chart.js and Chart.js Datalabels plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/Chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <script>
+        function toggleDataView() {
+            const dataContainer = document.getElementById('dataContainer');
+            dataContainer.classList.toggle('hidden');
+        }
+
+        function handleFile() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                const content = event.target.result;
+                processData(content, file.name);
+            };
+
+            reader.readAsText(file);
+        }
+
+        function processData(content, fileName) {
+            const csvRows = content.split('\n');
+            const headers = csvRows[0].split(',');
+            const data = csvRows.slice(1).map(row => {
+                const rowData = row.split(',');
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = rowData[index];
+                });
+                return obj;
+            });
+
+            // Filter data by gender (assuming 'Gender' is the column name)
+            const males = data.filter(item => item['gender'] === 'M');
+            const females = data.filter(item => item['gender'] === 'F');
+
+            // Count male and female patients
+            const maleCount = males.length;
+            const femaleCount = females.length;
+
+            // Create the pie chart for gender distribution
+            const genderCanvas = document.getElementById('genderPieChart').getContext('2d');
+            const genderPieChart = new Chart(genderCanvas, {
+                type: 'pie',
+                data: {
+                    labels: ['Male', 'Female'],
+                    datasets: [{
+                        data: [maleCount, femaleCount],
+                        backgroundColor: ['rgba(54, 162, 235, 0.7)', 'rgba(255, 99, 132, 0.7)'],
+                        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Gender Distribution'
+                    },
+                    plugins: {
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value) => {
+                                return value + ' patients';
+                            }
+                        }
+                    }
+                }
+            });
+
+            const diseaseCounts = {};
+            data.forEach(item => {
+                const disease = item['Patient_Disease'];
+                diseaseCounts[disease] = (diseaseCounts[disease] || 0) + 1;
+            });
+
+            const diseaseLabels = Object.keys(diseaseCounts);
+            const diseaseData = diseaseLabels.map(label => diseaseCounts[label]);
+
+            // Create the pie chart with percentages in tooltips
+            const diseaseCanvas = document.getElementById('diseasePieChart').getContext('2d');
+            const diseasePieChart = new Chart(diseaseCanvas, {
+                type: 'pie',
+                data: {
+                    labels: diseaseLabels,
+                    datasets: [{
+                        data: diseaseData,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                            'rgba(255, 159, 64, 0.7)',
+                            'rgba(205, 133, 63, 0.7)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(205, 133, 63, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Patient Disease Distribution'
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: (tooltipItem, data) => {
+                                const dataset = data.datasets[0];
+                                const total = dataset.data.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                                const currentValue = dataset.data[tooltipItem.index];
+                                const percentage = ((currentValue / total) * 100).toFixed(2) + "%";
+                                return `${data.labels[tooltipItem.index]}: ${currentValue} (${percentage})`;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+    <title>Healthcare Data Visualization Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #f0f0f0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #3f51b5; /* Indigo color */
+            color: white;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        nav li {
+            display: inline;
+            margin-right: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            border-bottom: 2px solid #3f51b5; /* Indigo color */
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+    </style>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #f0f0f0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #3f51b5; /* Indigo color */
+            color: white;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        nav li {
+            display: inline;
+            margin-right: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            border-bottom: 2px solid #3f51b5; /* Indigo color */
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <nav>
+        <ul>
+            <li><a href="#Dashboard">Dashboard</a></li>
+            <li><a href="#Patient-record">Patient Record</a></li>
+            <li><a href="#Visualization">Visualization</a></li>
+            <li><a href="#Resources">Resources</a></li>
+            <li><a href="#Billing">Billing</a></li>
+            <li><a href="#Insurance">Insurance</a></li>
+         </ul>
+    </nav>
+
+    
+       
+
+    <footer>
+        <p>&copy; 2023 Healthcare Data Visualization Portal</p>
+    </footer>
+
+    
+</body>
+            
+        
+   
+</body>
+</html>
