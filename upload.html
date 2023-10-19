@@ -3,63 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthcare Data Visualization Portal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('medical_background.jpeg'); /* Add this line */
-            background-size: cover; /* Optional: Scale the background image to cover the entire screen */
-            background-repeat: no-repeat; /* Optional: Prevent image repetition */
-            background-attachment: fixed; /* Optional: Fix the background image while scrolling */
-            color: #333;
-        }
-    
-     
-    </style>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #f0f0f0;
-            padding: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            color: #3498db;
-        }
-        .container {
-            display: flex;
-            justify-content: flex-end;
-            padding: 10px;
-        }
-        .chart-container {
-            margin: 20px;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
-</head>
-
 <body>
-   
+    <title>Healthcare Data Visualization Portal</title>
 
-    <div class="container">
+    <!-- <div class="container">
         <button onclick="toggleDataView()">Upload CSV Dataset</button>
-    </div>
+    </div> -->
 
-    <div id="dataContainer" class="hidden">
-        <div class="container">
+    <div id="data-container" >
+        
+        <div class="input-btn-container">
             <input type="file" id="csvFile" accept=".csv">
-            <button onclick="handleFile()">Upload</button>
+            <!-- <button onclick="handleFile()">Upload</button> -->
+        
+
+        <div class="btn-container">
+            <button onclick="handleFile()">Pie chart</button>
+            <button onclick="handleFile()">Bar chart</button>
         </div>
+    </div>
 
         <div class="chart-container">
             <canvas id="genderPieChart" width="300" height="300"></canvas>
@@ -202,7 +164,7 @@
                                 const total = dataset.data.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
                                 const currentValue = dataset.data[tooltipItem.index];
                                 const percentage = ((currentValue / total) * 100).toFixed(2) + "%";
-                                return `${data.labels[tooltipItem.index]}: ${currentValue} (${percentage})`;
+                                return ${data.labels[tooltipItem.index]}: ${currentValue} (${percentage});
                             }
                         }
                     }
@@ -211,271 +173,22 @@
         }
     </script>
    
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #f0f0f0;
-            padding: 20px;
-            text-align: center;
-        }
-
-        nav {
-            background-color: #3f51b5; /* Indigo color */
-            color: white;
-            padding: 10px;
-        }
-
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        nav li {
-            display: inline;
-            margin-right: 10px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-        }
-
-        nav a:hover {
-            border-bottom: 2px solid #3f51b5; /* Indigo color */
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        section {
-            margin-bottom: 20px;
-        }
-    </style>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #f0f0f0;
-            padding: 20px;
-            text-align: center;
-        }
-
-        nav {
-            background-color: #3f51b5; /* Indigo color */
-            color: white;
-            padding: 10px;
-        }
-
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        nav li {
-            display: inline;
-            margin-right: 10px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-        }
-
-        nav a:hover {
-            border-bottom: 2px solid #3f51b5; /* Indigo color */
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        section {
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-</body>
-<style>
-body, header, nav, ul, li, a {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    text-decoration: none;
-}
-
-header {
-    background-color: #f0f0f0;
-    padding: 20px;
-    text-align: center;
-}
-
-h1 {
-    color: #3498db;
-}
-
-.container {
-    display: flex;
-    justify-content: flex-end;
-    padding: 10px;
-}
-
-.chart-container {
-    margin: 20px;
-}
-
-.hidden {
-    display: none;
-}
-
-nav ul {
-    background-color: #3f51b5;
-    color: white;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-}
-
-nav li {
-    display: inline;
-    margin-right: 10px;
-    position: relative;
-}
-
-nav a {
-    color: white;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #3f51b5;
-}
-
-.dropdown li {
-    margin-right: 0;
-}
-
-.dropdown a {
-    color: white;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-</style>
-</head>
-
-    
-       
-
-<body>
    
+    <style>
+        .data-container {
+            display: flex;
+        }
+        .input-btn-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-container {
+            margin-top: 1rem;
+        }
 
-    
-    <nav>
-        <ul>
-            <li><a href="#Dashboard">Dashboard</a></li>
-            <li><a href="#Patient-record">Patient Record</a></li>
-            <li class="dropdown">
-                <a href="#Visualization">Visualization</a>
-                <ul class="dropdown-content">
-                    <li><a href="#">Pie Chart</a></li>
-                    <li><a href="#">Bar Chart</a></li>
-                </ul>
-            </li>
-            <li><a href="#Resources">Resources</a></li>
-            <li><a href="#Billing">Billing</a></li>
-            <li><a href="#Insurance">Insurance</a></li>
-         </ul>
-    </nav>
-    <main>
-        <section id="Dashboard">
-            <h2>Dashboard</h2>
-            <p>Welcome to the Healthcare Data Visualization Portal. Explore the following treatments and conditions:</p>
-
-            <ul>
-                <li><a href="#ImagingServices">Imaging Services</a></li>
-                <li><a href="#Scoliosis">Scoliosis</a></li>
-                <li><a href="#SpineCare">Spine Care</a></li>
-                <li><a href="#SpineRevisionSurgery">Spine Revision Surgery</a></li>
-                <li><a href="#Spondylolisthesis">Spondylolisthesis</a></li>
-                <li><a href="#CancerTreatment">Cancer Treatment</a></li>
-                <li><a href="#Heartstroke">Heartstroke</a></li>
-                <li><a href="#Obesity">Obesity</a></li>
-                <li><a href="#Diabetes">Diabetes</a></li>
-                <li><a href="#Asthma">Asthma</a></li>
-                
-            </ul>
-        </section>
-
-        <!-- Individual Treatment/Condition Sections -->
-        <section id="ImagingServices">
-            <h2>Imaging Services</h2>
-            <p>Our facility provides comprehensive diagnostic imaging services to support the diagnosis and treatment of various medical conditions.</p>
-        </section>
-
-        <section id="Scoliosis">
-            <h2>Scoliosis</h2>
-            <p>We offer specialized care for patients with scoliosis, addressing the abnormal curvature of the spine through various treatment options.</p>
-        </section>
-
-        <section id="SpineCare">
-            <h2>Spine Care</h2>
-            <p>Comprehensive services for spine-related conditions, including non-surgical and surgical treatments as needed.</p>
-        </section>
-
-        <section id="SpineRevisionSurgery">
-            <h2>Spine Revision Surgery</h2>
-            <p>Specialized surgical procedures to correct or enhance the results of previous spinal surgeries.</p>
-        </section>
-
-        <section id="Spondylolisthesis">
-            <h2>Spondylolisthesis</h2>
-            <p>Treatment and care for patients with spondylolisthesis, addressing the shifting of vertebrae.</p>
-        </section>
-
-        <section id="CancerTreatment">
-            <h2>Cancer Treatment</h2>
-            <p>Our facility provides comprehensive cancer treatment services, including surgery, chemotherapy, and radiation therapy.</p>
-        </section>
-
-        <section id="Heartstroke">
-            <h2>Heartstroke</h2>
-            <p>We provide treatment and care for patients at risk of or affected by heartstroke, a critical cardiovascular condition.</p>
-        </section>
-
-        <section id="Obesity">
-            <h2>Obesity</h2>
-            <p>Our facility offers solutions for individuals struggling with obesity, including medical, surgical, and lifestyle interventions.</p>
-        </section>
-
-        <section id="Diabetes">
-            <h2>Diabetes</h2>
-            <p>We specialize in the management and treatment of diabetes, including education, medication, and lifestyle guidance.</p>
-        </section>
-
-        <section id="Asthma">
-            <h2>Asthma</h2>
-            <p>Patients with asthma receive comprehensive care and management services to control their condition and improve their quality of life.</p>
-            <li><a href="mailto:Healcaredatavisualisationportal.mail@example.com">Email Us</a></li>
-        </section>
-    </main>
-    
-
-    <footer>
-        <p>&copy; 2023 Healthcare Data Visualization Portal</p>
-    </footer>
+    </style>
+</head>
 </body>
 </html>
