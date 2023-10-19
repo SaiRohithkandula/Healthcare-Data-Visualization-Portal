@@ -34,7 +34,7 @@ Transforms complex healthcare data into visually appealing and easy-to-understan
 
 - HTML, CSS, JavaScript
 - D3.js,chart.js (Data-Driven Documents)
-- ReactJS (Frontend)
+- VS Code
 
 
 
