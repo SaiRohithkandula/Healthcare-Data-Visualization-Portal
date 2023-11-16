@@ -21,8 +21,8 @@
         
 
         <div class="btn-container">
-            <button onclick="handleFile()">Pie chart</button>
-            <button >Bar chart</button>
+            <button onclick="handleFile_pie()">Pie chart</button>
+            
         </div>
         
     </div>
@@ -46,7 +46,7 @@
             dataContainer.classList.toggle('hidden');
         }
 
-        function handleFile() {
+        function handleFile_pie() {
             const fileInput = document.getElementById('csvFile');
             const file = fileInput.files[0];
 
@@ -176,6 +176,7 @@
             });
         }
     </script>
+    
    
    
     <style>
