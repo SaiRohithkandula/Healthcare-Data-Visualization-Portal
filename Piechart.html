@@ -3,6 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .data-container {
+            display: flex;
+        }
+        .input-btn-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-container {
+            margin-top: 1rem;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('medical_background.jpeg'); /* Add this line */
+            background-size: cover; /* Optional: Scale the background image to cover the entire screen */
+            background-repeat: no-repeat; /* Optional: Prevent image repetition */
+            background-attachment: fixed; /* Optional: Fix the background image while scrolling */
+            color: #333;
+        }
+</style>
+
+</head>
 <body>
     <title>Healthcare Data Visualization Portal</title>
     <div class="logo">
@@ -28,12 +54,16 @@
     </div>
 
         <div class="chart-container">
-            <canvas id="genderPieChart" width="300" height="300"></canvas>
+            <canvas id="genderPieChart" width="500" height="500"></canvas>
         </div>
 
         <div class="chart-container">
-            <canvas id="diseasePieChart" width="300" height="300"></canvas>
+            <canvas id="diseasePieChart" width="500" height="500"></canvas>
         </div>
+    </div>
+    <div class="chart-container">
+        <canvas id="ageChart" width="500" height="500"></canvas>
+    </div>
     </div>
 
     <!-- Include Chart.js and Chart.js Datalabels plugin -->
@@ -174,36 +204,83 @@
                     }
                 }
             });
+            const ageCounts = {
+                '10-20': 0,
+                '20-30': 0,
+                '30-40': 0,
+                '40-50': 0,
+                '50-60': 0,
+                '60-70': 0,
+                '70-80': 0,
+                '80-90': 0,
+                '90-100': 0,
+                '>100': 0
+            };
+
+            data.forEach(item => {
+                const age = parseInt(item['Age']);
+
+                if (age >= 10 && age < 20) {
+                    ageCounts['10-20']++;
+                } else if (age >= 20 && age < 30) {
+                    ageCounts['20-30']++;
+                } else if (age >= 30 && age < 40) {
+                    ageCounts['30-40']++;
+                } else if (age >= 40 && age < 50) {
+                    ageCounts['40-50']++;
+                } else if (age >= 50 && age < 60) {
+                    ageCounts['50-60']++;
+                } else if (age >= 60 && age < 70) {
+                    ageCounts['60-70']++;
+                } else if (age >= 70 && age < 80) {
+                    ageCounts['70-80']++;
+                } else if (age >= 80 && age < 90) {
+                    ageCounts['80-90']++;
+                } else if (age >= 90 && age <= 100) {
+                    ageCounts['90-100']++;
+                } else {
+                    ageCounts['>100']++;
+                }
+            });
+
+            const ageLabels = Object.keys(ageCounts);
+            const ageData = Object.values(ageCounts);
+            const backgroundColors1 = generateColors1(ageLabels.length);
+            const ageCanvas = document.getElementById('ageChart').getContext('2d');
+            const ageBarChart = new Chart(ageCanvas, {
+                type: 'pie',
+                data: {
+                    labels: ageLabels,
+                    datasets: [{
+                        label: 'Patient Age Distribution',
+                        data: ageData,
+                        backgroundColor: backgroundColors1,
+                        borderColor: backgroundColors1,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Patient Age Distribution'
+                    },
+                    
+                }
+            });
+        }
+        function generateColors1(numColors) {
+            const colors = [];
+            for (let i = 0; i < numColors; i++) {
+                const r = Math.floor(Math.random() * 256);
+                const g = Math.floor(Math.random() * 256);
+                const b = Math.floor(Math.random() * 256);
+                colors.push(`rgba(${r}, ${g}, ${b}, 1)`);
+            }
+            return colors;
         }
     </script>
-    
-   
-   
-    <style>
-        .data-container {
-            display: flex;
-        }
-        .input-btn-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .btn-container {
-            margin-top: 1rem;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('medical_background.jpeg'); /* Add this line */
-            background-size: cover; /* Optional: Scale the background image to cover the entire screen */
-            background-repeat: no-repeat; /* Optional: Prevent image repetition */
-            background-attachment: fixed; /* Optional: Fix the background image while scrolling */
-            color: #333;
-        }
 
-    </style>
-</head>
 </body>
 </html>
