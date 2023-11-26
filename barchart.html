@@ -3,49 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<body>
     <title>Healthcare Data Visualization Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('medical_background.jpeg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #333;
+        }
+        .logo img {
+            width: 100px;
+            height: 100px;
+        }
+        .data-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .input-btn-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .btn-container {
+            margin-top: 1rem;
+        }
+        .chart-container {
+            max-width: 80%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
     <div class="logo">
-        <img src="logo.png" alt="Logo" width="100px" height="100px">
+        <img src="logo.png" alt="Logo">
     </div>
 
-    <!-- <div class="container">
-        <button onclick="toggleDataView()">Upload CSV Dataset</button>
-    </div> -->
-
-    <div id="data-container" >
-        
+    <div class="data-container">
         <div class="input-btn-container">
             <input type="file" id="csvFile" accept=".csv">
-            <!-- <button onclick="handleFile()">Upload</button> -->
-        
-
-        <div class="btn-container">
-            <button onclick="handleFile_bar()">Bar chart</button>
-            
+            <div class="btn-container">
+                <button onclick="handleFile_bar()">Bar chart</button>
+            </div>
         </div>
         
+        <div class="chart-container">
+            <canvas id="medicineChart" width="1200" height="800"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="ageChart" width="1200" height="800"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="genderPieChart" width="300" height="300"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="diseasePieChart" width="300" height="300"></canvas>
+        </div>
     </div>
 
-        <div class="chart-container">
-            <canvas id="genderBarChart" width="300" height="300"></canvas>
-        </div>
-
-        <div class="chart-container">
-            <canvas id="diseaseBarChart" width="300" height="300"></canvas>
-        </div>
-    </div>
-
-    <!-- Include Chart.js and Chart.js Datalabels plugin -->
+    <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/Chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
     <script>
-        function toggleDataView() {
-            const dataContainer = document.getElementById('dataContainer');
-            dataContainer.classList.toggle('hidden');
-        }
-
         function handleFile_bar() {
             const fileInput = document.getElementById('csvFile');
             const file = fileInput.files[0];
@@ -77,7 +103,135 @@
                 return obj;
             });
 
-            // Filter data by gender (assuming 'Gender' is the column name)
+            const medicineCounts = {};
+            data.forEach(item => {
+                const medicine = item['Medicine'];
+                medicineCounts[medicine] = (medicineCounts[medicine] || 0) + 1;
+            });
+
+            const medicineLabels = Object.keys(medicineCounts);
+            const medicineData = medicineLabels.map(label => medicineCounts[label]);
+
+            const backgroundColors = generateColors(medicineLabels.length);
+
+            const medicineCanvas = document.getElementById('medicineChart').getContext('2d');
+            const medicineBarChart = new Chart(medicineCanvas, {
+                type: 'bar',
+                data: {
+                    labels: medicineLabels,
+                    datasets: [{
+                        label: 'Medicine Distribution',
+                        data: medicineData,
+                        backgroundColor: backgroundColors,
+                        borderColor: backgroundColors,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Medicine Distribution'
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                fontSize: 14
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 1,
+                                fontSize: 14
+                            }
+                        }]
+                    }
+                }
+            });
+        
+        const ageCounts = {
+                '10-20': 0,
+                '20-30': 0,
+                '30-40': 0,
+                '40-50': 0,
+                '50-60': 0,
+                '60-70': 0,
+                '70-80': 0,
+                '80-90': 0,
+                '90-100': 0,
+                '>100': 0
+            };
+
+            data.forEach(item => {
+                const age = parseInt(item['Age']);
+
+                if (age >= 10 && age < 20) {
+                    ageCounts['10-20']++;
+                } else if (age >= 20 && age < 30) {
+                    ageCounts['20-30']++;
+                } else if (age >= 30 && age < 40) {
+                    ageCounts['30-40']++;
+                } else if (age >= 40 && age < 50) {
+                    ageCounts['40-50']++;
+                } else if (age >= 50 && age < 60) {
+                    ageCounts['50-60']++;
+                } else if (age >= 60 && age < 70) {
+                    ageCounts['60-70']++;
+                } else if (age >= 70 && age < 80) {
+                    ageCounts['70-80']++;
+                } else if (age >= 80 && age < 90) {
+                    ageCounts['80-90']++;
+                } else if (age >= 90 && age <= 100) {
+                    ageCounts['90-100']++;
+                } else {
+                    ageCounts['>100']++;
+                }
+            });
+
+            const ageLabels = Object.keys(ageCounts);
+            const ageData = Object.values(ageCounts);
+            const backgroundColors1 = generateColors1(ageLabels.length);
+            const ageCanvas = document.getElementById('ageChart').getContext('2d');
+            const ageBarChart = new Chart(ageCanvas, {
+                type: 'bar',
+                data: {
+                    labels: ageLabels,
+                    datasets: [{
+                        label: 'Patient Age Distribution',
+                        data: ageData,
+                        backgroundColor: backgroundColors1,
+                        borderColor: backgroundColors1,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Patient Age Distribution'
+                    },
+                    scales: {
+                        xAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Age Groups'
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Number of Patients'
+                            },
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
             const males = data.filter(item => item['gender'] === 'M');
             const females = data.filter(item => item['gender'] === 'F');
 
@@ -86,16 +240,17 @@
             const femaleCount = females.length;
 
             // Create the pie chart for gender distribution
-            const genderCanvas = document.getElementById('genderBarChart').getContext('2d');
-            const genderBarChart = new Chart(genderCanvas, {
+            const genderCanvas = document.getElementById('genderPieChart').getContext('2d');
+            const genderPieChart = new Chart(genderCanvas, {
                 type: 'bar',
                 data: {
                     labels: ['Male', 'Female'],
                     datasets: [{
+                        label: 'Gender Distribution',
                         data: [maleCount, femaleCount],
-                        backgroundColor: ['rgba(54, 162, 235, 0.7)', 'rgba(255, 99, 132, 0.7)'],
-                        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
-                        borderWidth: 1
+                        backgroundColor: backgroundColors1,
+                        borderColor: backgroundColors1,
+                        borderWidth: 2
                     }]
                 },
                 options: {
@@ -115,7 +270,6 @@
                     }
                 }
             });
-
             const diseaseCounts = {};
             data.forEach(item => {
                 const disease = item['Patient_Disease'];
@@ -126,32 +280,17 @@
             const diseaseData = diseaseLabels.map(label => diseaseCounts[label]);
 
             // Create the pie chart with percentages in tooltips
-            const diseaseCanvas = document.getElementById('diseaseBarChart').getContext('2d');
+            const diseaseCanvas = document.getElementById('diseasePieChart').getContext('2d');
             const diseasePieChart = new Chart(diseaseCanvas, {
                 type: 'bar',
                 data: {
                     labels: diseaseLabels,
                     datasets: [{
+                        label: 'Patient Disease Distribution',
                         data: diseaseData,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.7)',
-                            'rgba(54, 162, 235, 0.7)',
-                            'rgba(255, 206, 86, 0.7)',
-                            'rgba(75, 192, 192, 0.7)',
-                            'rgba(153, 102, 255, 0.7)',
-                            'rgba(255, 159, 64, 0.7)',
-                            'rgba(205, 133, 63, 0.7)',
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)',
-                            'rgba(205, 133, 63, 1)',
-                        ],
-                        borderWidth: 1
+                        backgroundColor: backgroundColors1,
+                        borderColor: backgroundColors1,
+                        borderWidth: 2
                     }]
                 },
                 options: {
@@ -175,35 +314,27 @@
                 }
             });
         }
-    </script>
-    
-   
-   
-    <style>
-        .data-container {
-            display: flex;
-        }
-        .input-btn-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .btn-container {
-            margin-top: 1rem;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('medical_background.jpeg'); /* Add this line */
-            background-size: cover; /* Optional: Scale the background image to cover the entire screen */
-            background-repeat: no-repeat; /* Optional: Prevent image repetition */
-            background-attachment: fixed; /* Optional: Fix the background image while scrolling */
-            color: #333;
-        }
 
-    </style>
-</head>
+        function generateColors(numColors) {
+            const colors = [];
+            for (let i = 0; i < numColors; i++) {
+                const r = Math.floor(Math.random() * 256);
+                const g = Math.floor(Math.random() * 256);
+                const b = Math.floor(Math.random() * 256);
+                colors.push(`rgba(${r}, ${g}, ${b}, 1)`);
+            }
+            return colors;
+        }
+        function generateColors1(numColors) {
+            const colors = [];
+            for (let i = 0; i < numColors; i++) {
+                const r = Math.floor(Math.random() * 256);
+                const g = Math.floor(Math.random() * 256);
+                const b = Math.floor(Math.random() * 256);
+                colors.push(`rgba(${r}, ${g}, ${b}, 1)`);
+            }
+            return colors;
+        }
+    </script>
 </body>
 </html>
