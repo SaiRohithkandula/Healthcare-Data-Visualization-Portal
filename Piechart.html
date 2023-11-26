@@ -54,15 +54,15 @@
     </div>
 
         <div class="chart-container">
-            <canvas id="genderPieChart" width="350" height="350"></canvas>
+            <canvas id="genderPieChart" width="500" height="500"></canvas>
         </div>
 
         <div class="chart-container">
-            <canvas id="diseasePieChart" width="350" height="350"></canvas>
+            <canvas id="diseasePieChart" width="500" height="500"></canvas>
         </div>
     </div>
     <div class="chart-container">
-        <canvas id="ageChart" width="350" height="350"></canvas>
+        <canvas id="ageChart" width="500" height="500"></canvas>
     </div>
     </div>
 
@@ -158,7 +158,7 @@
             // Create the pie chart with percentages in tooltips
             const diseaseCanvas = document.getElementById('diseasePieChart').getContext('2d');
             const diseasePieChart = new Chart(diseaseCanvas, {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     labels: diseaseLabels,
                     datasets: [{
@@ -248,7 +248,7 @@
             const backgroundColors1 = generateColors1(ageLabels.length);
             const ageCanvas = document.getElementById('ageChart').getContext('2d');
             const ageBarChart = new Chart(ageCanvas, {
-                type: 'pie',
+                type: 'polarArea',
                 data: {
                     labels: ageLabels,
                     datasets: [{
