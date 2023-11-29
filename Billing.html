@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('medical_background.jpeg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #333;
+        }
+        .logo img {
+            width: 100px;
+            height: 100px;
+        }
+        .data-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .input-btn-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .btn-container {
+            margin-top: 1rem;
+        }
+        .chart-container {
+            max-width: 80%;
+            margin: 0 auto;
+        }
+        .patient-id {
+            color: blue;
+        }
+        .patient-name {
+            color: green;
+        }
+        #searchBtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        #searchBtn:hover {
+            background-color: #45a049;
+        }
+        .payment-options {
+            display: none;
+            margin-top: 20px;
+        }
+        .payment-method {
+            margin-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+         }
+    </style>
+     <div class="logo">
+        <img src="logo.png" alt="Logo">
+    </div>
+</head>
+<body>
+    <h1>Billing Information</h1>
+
+    <!-- Input for uploading CSV file -->
+    <input type="file" id="csvFile" accept=".csv">
+
+    <!-- Input for entering patient name -->
+    <label for="Patient_name">Enter Patient Name:</label>
+    <input type="text" id="Patient_name" class="patient-name">
+    
+    <!-- Search button -->
+    <button id="searchBtn" onclick="searchPatient()">Search</button>
+
+    <div id="billing-table"></div>
+
+    <!-- Pay Bill button and payment options -->
+    <button onclick="displayPaymentOptions()">Pay Bill</button>
+    <div class="payment-options">
+        <div class="payment-method">
+            <input type="radio" id="creditCard" name="paymentMethod" value="creditCard">
+            <label for="creditCard">Credit Card</label>
+        </div>
+        <div class="payment-method">
+            <input type="radio" id="payCash" name="paymentMethod" value="payCash">
+            <label for="payCash">Pay Cash</label>
+        </div>
+    </div>
+    <div class="credit-card-details" style="display: none;">
+        <h3>Enter Credit Card Details</h3>
+        <label for="cardNumber">Card Number:</label>
+        <input type="text" id="cardNumber" placeholder="Enter card number"><br><br>
+
+        <label for="expiry">Expiry Date:</label>
+        <input type="text" id="expiry" placeholder="MM/YYYY"><br><br>
+
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" placeholder="Enter CVV"><br><br>
+
+        <button onclick="processCreditCardPayment()">Make Payment</button>
+    </div>
+
+    <!-- Include your JavaScript code -->
+    <script>
+        let healthcare_csv_dataset; // Global variable to store the dataset
+        function processCreditCardPayment() {
+            const cardNumber = document.getElementById('cardNumber').value;
+            const expiry = document.getElementById('expiry').value;
+            const cvv = document.getElementById('cvv').value;
+
+            if (cardNumber && expiry && cvv) {
+                // Here, you can add code to process the credit card payment
+                alert('Credit card payment processed successfully!');
+            } else {
+                alert('Please enter valid card details.');
+            }
+        }
+        // Function to validate credit card details
+function validateCreditCardDetails(cardNumber, expiry, cvv) {
+    // Validate card number (assuming 16-digit format for this example)
+    const cardNumberRegex = /^[0-9]{16}$/;
+    if (!cardNumber.match(cardNumberRegex)) {
+        alert('Please enter a valid 16-digit card number.');
+        return false;
+    }
+
+    // Validate expiry date (assuming MM/YYYY format for this example)
+    const expiryRegex = /^(0[1-9]|1[0-2])\/[0-9]{4}$/;
+    if (!expiry.match(expiryRegex)) {
+        alert('Please enter a valid expiry date in MM/YYYY format.');
+        return false;
+    }
+
+    // Validate CVV (assuming 3-digit CVV for this example)
+    const cvvRegex = /^[0-9]{3}$/;
+    if (!cvv.match(cvvRegex)) {
+        alert('Please enter a valid 3-digit CVV.');
+        return false;
+    }
+
+    return true;
+}
+
+function processCreditCardPayment() {
+    const cardNumber = document.getElementById('cardNumber').value;
+    const expiry = document.getElementById('expiry').value;
+    const cvv = document.getElementById('cvv').value;
+
+    if (validateCreditCardDetails(cardNumber, expiry, cvv)) {
+        // Payment processing logic here
+        alert('Credit card payment processed successfully!');
+    }
+}
+
+
+       // Function to generate receipt for cash payment
+function generateCashReceipt(patient) {
+    const receiptContent = `
+        RECEIPT
+        Patient ID: ${patient.patient_id}
+        Patient Name: ${patient.Patient_name}
+        Treatment Costs: ${patient.Patient_Treatment_Costs}
+        Payment Mode: Cash
+    `;
+
+    const receiptWindow = window.open('', 'Receipt', 'width=400,height=400');
+    receiptWindow.document.body.innerHTML = receiptContent;
+
+    // Add a download button to download the receipt as a text file
+    const downloadLink = document.createElement('a');
+    downloadLink.innerText = 'Download Receipt';
+    downloadLink.href = `data:text/plain;charset=utf-8,${encodeURIComponent(receiptContent)}`;
+    downloadLink.download = 'cash_receipt.txt';
+    receiptWindow.document.body.appendChild(downloadLink);
+}
+
+// Function to handle payment options
+function handlePaymentOption(paymentMethod) {
+    if (paymentMethod === 'creditCard') {
+        document.querySelector('.credit-card-details').style.display = 'block';
+    } else if (paymentMethod === 'payCash') {
+        const patientName = document.getElementById('Patient_name').value;
+        const patient = healthcare_csv_dataset.find(patient => patient.Patient_name === patientName);
+
+        if (patient) {
+            generateCashReceipt(patient);
+        } else {
+            alert('Patient not found!');
+        }
+    }
+}
+
+
+        // Add event listeners for payment options
+        document.getElementById('creditCard').addEventListener('click', () => handlePaymentOption('creditCard'));
+        document.getElementById('payCash').addEventListener('click', () => handlePaymentOption('payCash'));
+
+        // Function to parse CSV data
+        function parseCsvData(csvData) {
+            const rows = csvData.split('\n');
+            const headers = rows[0].split(',');
+            const data = rows.slice(1).map(row => {
+                const rowData = row.split(',');
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = rowData[index];
+                });
+                return obj;
+            });
+            return data;
+        }
+
+        // Function to handle file upload
+        function handleFileUpload() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                const content = event.target.result;
+                healthcare_csv_dataset = parseCsvData(content);
+                alert('Dataset uploaded successfully!');
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Function to generate the billing table
+        function generateBillingTable(data) {
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>Patient Name</th>
+                        <th>Treatment Costs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.map(patient => `
+                        <tr>
+                            <td class="patient-id">${patient.patient_id}</td>
+                            <td class="patient-name">${patient.Patient_name}</td>
+                            <td>$${patient.Patient_Treatment_Costs}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            return table;
+        }
+
+        // Function to display the billing table
+        function displayBillingTable(data) {
+            const billingTable = document.getElementById('billing-table');
+            billingTable.innerHTML = '';
+            billingTable.appendChild(generateBillingTable(data));
+        }
+
+        // Function to search for a patient in the dataset
+        function searchPatient() {
+            const Patient_name = document.getElementById('Patient_name').value;
+            const patient = healthcare_csv_dataset.find(patient => patient.Patient_name === Patient_name);
+
+            if (patient) {
+                displayBillingTable([patient]);
+            } else {
+                alert('Patient not found!');
+            }
+        }
+
+        // Function to display payment options
+        function displayPaymentOptions() {
+            const paymentOptions = document.querySelector('.payment-options');
+            paymentOptions.style.display = 'block';
+        }
+
+        // Add event listener for file upload
+        document.getElementById('csvFile').addEventListener('change', handleFileUpload);
+        
+    </script>
+</body>
+</html>
