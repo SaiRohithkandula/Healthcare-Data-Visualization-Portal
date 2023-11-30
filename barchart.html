@@ -61,7 +61,7 @@
             <canvas id="ageChart" width="1200" height="800"></canvas>
         </div>
         <div class="chart-container">
-            <canvas id="genderPieChart" width="1200" height="800"></canvas>
+            <canvas id="genderPieChart" width="800" height="800"></canvas>
         </div>
         <div class="chart-container">
             <canvas id="diseasePieChart" width="1200" height="800"></canvas>
@@ -115,7 +115,7 @@
             const backgroundColors = generateColors(medicineLabels.length);
 
             const medicineCanvas = document.getElementById('medicineChart').getContext('2d');
-            const medicineBarChart = new Chart(medicineCanvas, {
+            const stackedBarChart = new Chart(medicineCanvas, {
                 type: 'bar',
                 data: {
                     labels: medicineLabels,
@@ -242,7 +242,7 @@
             // Create the pie chart for gender distribution
             const genderCanvas = document.getElementById('genderPieChart').getContext('2d');
             const genderPieChart = new Chart(genderCanvas, {
-                type: 'bar',
+                type: 'horizontalBar',
                 data: {
                     labels: ['Male', 'Female'],
                     datasets: [{
@@ -281,7 +281,7 @@
 
             // Create the pie chart with percentages in tooltips
             const diseaseCanvas = document.getElementById('diseasePieChart').getContext('2d');
-            const diseasePieChart = new Chart(diseaseCanvas, {
+            const verticalBarChart = new Chart(diseaseCanvas, {
                 type: 'bar',
                 data: {
                     labels: diseaseLabels,
@@ -335,6 +335,36 @@
             }
             return colors;
         }
+
+        function readChart(chartTitle, chartData) {
+            const utterance = new SpeechSynthesisUtterance(chartTitle + '. ' + chartData);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Function to read website description aloud
+        function readWebsiteDescription() {
+            const description = 'This is a Healthcare Data Visualization Portal. Press L for website description or G for chart data.';
+            const utterance = new SpeechSynthesisUtterance(description);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Event listener to trigger voice-over on 'L' key press for website description
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'l' || event.key === 'L') {
+                readWebsiteDescription();
+            }
+        });
+
+        // Event listener to trigger voice-over on 'G' key press for chart data
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'g' || event.key === 'G') {
+                readChart('Medicine Distribution', 'Your Medicine Chart Data');
+                readChart('Patient Age Distribution', 'Your Age Chart Data');
+                readChart('Gender Distribution', 'Your Gender Chart Data');
+                readChart('Patient Disease Distribution', 'Your Disease Chart Data');
+            }
+        });
+
     </script>
 </body>
 </html>
