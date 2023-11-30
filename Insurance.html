@@ -218,6 +218,189 @@
 
         // Add event listener for file upload
         document.getElementById('csvFile').addEventListener('change', handleFileUpload);
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Records</title>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url('medical_background.jpeg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        color: #333;
+    }
+
+    h1, h2 {
+        color: #0066ff; /* Change header text color */
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    /* Input and button styles */
+    .form-control {
+        width: 300px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    #button {
+        width: 150px;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #0066ff;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #button:hover {
+        background-color: #004080;
+    }
+
+    /* Table styles */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        color: #333;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Patient Records</h1>
+                <h2>Search records</h2>
+                <form id="form">
+                    <input class="form-control" id="user-input" placeholder="Enter your name...">
+                    <button id="button" class="btn btn-secondary">Search</button>
+                </form>
+                <table class="table" cellpadding="10">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Patient Name</th>
+                            <th scope="col">Date of Birth</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">Gender</th>
+                            <th scope="col">Disease</th>
+                            <th scope="col">Last Appointment Date</th>
+                            <th scope="col">Doctor Name</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patient-data">
+                        <!-- Records will be displayed here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const patients = [
+            {
+                "Patient_name": "Scott Webb",
+                "date_of_birth": "28-04-1967",
+                "Age": 56,
+                "gender": "F",
+                "Patient_Disease": "Diabetes",
+                "last_appointment_date": "26-07-2022",
+                "Doctor_Name": "Zoe Wheeler"
+            },
+            {
+                "Patient_name": "Rachel Frederick",
+                "date_of_birth": "04-04-1977",
+                "Age": 46,
+                "gender": "M",
+                "Patient_Disease": "Diabetes",
+                "last_appointment_date": "14-02-2023",
+                "Doctor_Name": "Zoe Welch"
+            },
+            {
+                "Patient_name": "Eric Kline",
+                "date_of_birth": "18-05-1926",
+                "Age": 97,
+                "gender": "M",
+                "Patient_Disease": "Diabetes",
+                "last_appointment_date": "24-04-2021",
+                "Doctor_Name": "Zoe Sharp"
+            }
+        ];
+
+        document.getElementById("button").addEventListener("click", function (event) {
+            event.preventDefault();
+            const inputValue = document.getElementById("user-input").value.toLowerCase();
+            const filteredPatients = patients.filter(patient =>
+                patient.Patient_name.toLowerCase().includes(inputValue)
+            );
+            displayPatientRecords(filteredPatients);
+        });
+
+        function displayPatientRecords(records) {
+            const tableBody = document.getElementById("patient-data");
+            tableBody.innerHTML = "";
+            records.forEach((record, index) => {
+                const { Patient_name, date_of_birth, Age, gender, Patient_Disease, last_appointment_date, Doctor_Name } = record;
+                const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${Patient_name}</td>
+                        <td>${date_of_birth}</td>
+                        <td>${Age}</td>
+                        <td>${gender}</td>
+                        <td>${Patient_Disease}</td>
+                        <td>${last_appointment_date}</td>
+                        <td>${Doctor_Name}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+         function readChart(chartTitle, chartData) {
+            const utterance = new SpeechSynthesisUtterance(chartTitle + '. ' + chartData);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Function to read website description aloud
+        function readWebsiteDescription() {
+            const description = 'This is Insurance Tab which shows the insurance types. Choose File. Search Patient. Insurance Types Medicare, Long Term Insurance, Short Term Insurance. ';
+            const utterance = new SpeechSynthesisUtterance(description);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Event listener to trigger voice-over on 'L' key press for website description
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'l' || event.key === 'L') {
+                readWebsiteDescription();
+            }
+        });
+
+        
+
+    </script>
+    
+</body>
+</html>
     </script>
 </body>
 </html>
