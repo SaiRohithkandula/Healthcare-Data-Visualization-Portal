@@ -327,52 +327,18 @@ nav a {
         </section>
     </main>
     <script>
-  function readChart(chartTitle, chartData) {
+      function readChart(chartTitle, chartData) {
             const utterance = new SpeechSynthesisUtterance(chartTitle + '. ' + chartData);
             window.speechSynthesis.speak(utterance);
         }
 
         // Function to read website description aloud
         function readWebsiteDescription() {
-            const description = 'Welcome to the Healthcare Data Visualization Portal. Explore the following treatments and conditions. Imaging Services
-Scoliosis
-Spine Care
-Spine Revision Surgery
-Spondylolisthesis
-Cancer Treatment
-Heartstroke
-Obesity
-Diabetes
-Asthma
-Imaging Services
-Our facility provides comprehensive diagnostic imaging services to support the diagnosis and treatment of various medical conditions.
-
-Scoliosis
-We offer specialized care for patients with scoliosis, addressing the abnormal curvature of the spine through various treatment options.
-
-Spine Care
-Comprehensive services for spine-related conditions, including non-surgical and surgical treatments as needed.
-
-Spine Revision Surgery
+            const description = 'Welcome to the Healthcare Data Visualization Portal. Explore the following treatments and conditions. Imaging Services,Scoliosis,Spine Care,Spine Revision Surgery Spondylolisthesis Cancer Treatment Heartstroke Obesity Diabetes Asthma Imaging Services Our facility provides comprehensive diagnostic imaging services to support the diagnosis and treatment of various medical conditions.Scoliosis
+We offer specialized care for patients with scoliosis, addressing the abnormal curvature of the spine through various treatment options. Spine Care Comprehensive services for spine-related conditions, including non-surgical and surgical treatments as needed. Spine Revision Surgery
 Specialized surgical procedures to correct or enhance the results of previous spinal surgeries.
+Spondylolisthesis Treatment and care for patients with spondylolisthesis, addressing the shifting of vertebrae. Cancer Treatment Our facility provides comprehensive cancer treatment services, including surgery, chemotherapy, and radiation therapy. Heartstroke We provide treatment and care for patients at risk of or affected by heartstroke, a critical cardiovascular condition. Obesity Our facility offers solutions for individuals struggling with obesity, including medical, surgical, and lifestyle interventions.Diabetes We specialize in the management and treatment of diabetes, including education, medication, and lifestyle guidance. Asthma Patients with asthma receive comprehensive care and management services to control their condition and improve their quality of life.';
 
-Spondylolisthesis
-Treatment and care for patients with spondylolisthesis, addressing the shifting of vertebrae.
-
-Cancer Treatment
-Our facility provides comprehensive cancer treatment services, including surgery, chemotherapy, and radiation therapy.
-
-Heartstroke
-We provide treatment and care for patients at risk of or affected by heartstroke, a critical cardiovascular condition.
-
-Obesity
-Our facility offers solutions for individuals struggling with obesity, including medical, surgical, and lifestyle interventions.
-
-Diabetes
-We specialize in the management and treatment of diabetes, including education, medication, and lifestyle guidance.
-
-Asthma
-Patients with asthma receive comprehensive care and management services to control their condition and improve their quality of life.';
             const utterance = new SpeechSynthesisUtterance(description);
             window.speechSynthesis.speak(utterance);
         }
@@ -384,7 +350,8 @@ Patients with asthma receive comprehensive care and management services to contr
             }
         });
 
-       </script>
+       
+</script>
 
     <footer>
         <p>&copy; 2023 Healthcare Data Visualization Portal</p>
