@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #insuranceTypes {
+            margin-top: 20px;
+        }
+        .insurance-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            color: #fff;
+            font-weight: bold;
+        }
+        .diabetes {
+            background-color: #ff6347;
+        }
+        .obesity {
+            background-color: #1e90ff;
+        }
+        .others {
+            background-color: #32cd32;
+        }
+        #searchBtn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Insurance Claims</h1>
+
+    <!-- Input for uploading CSV file -->
+    <input type="file" id="csvFile" accept=".csv">
+
+    <!-- Insurance types as buttons -->
+    <div id="insuranceTypes">
+        <button class="insurance-button diabetes" onclick="selectInsurance('Diabetes')">Medicare</button>
+        <button class="insurance-button obesity" onclick="selectInsurance('Obesity')">Short Term Insurance</button>
+        <button class="insurance-button others" onclick="selectInsurance('Others')">Long Term Insurance</button>
+    </div>
+
+    <!-- Search input and button -->
+    <label for="searchPatient">Search Patient:</label>
+    <input type="text" id="searchPatient" placeholder="Enter patient name">
+    <button id="searchBtn" onclick="searchPatient()">Search</button>
+
+    <!-- Display insurance claims -->
+    <div id="insuranceClaims"></div>
+
+    <script>
+        let healthcare_csv_dataset = [];
+
+        // Function to parse CSV data
+        function parseCsvData(csvData) {
+            const rows = csvData.split('\n');
+            const headers = rows[0].split(',');
+            const data = rows.slice(1).map(row => {
+                const rowData = row.split(',');
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = rowData[index];
+                });
+                return obj;
+            });
+            return data;
+        }
+
+        // Function to handle file upload
+        function handleFileUpload() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                const content = event.target.result;
+                healthcare_csv_dataset = parseCsvData(content);
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Function to generate insurance claims based on treatment costs and selected insurance
+        function generateInsuranceClaims(insuranceType, data) {
+            const insuranceClaims = data.filter(patient => {
+                const treatmentCosts = parseInt(patient.Patient_Treatment_Costs);
+                if (insuranceType === 'Medicare') {
+                    return treatmentCosts >= 0 && treatmentCosts <= 20000;
+                } else if (insuranceType === 'Short Term Insurance') {
+                    return treatmentCosts >= 20001 && treatmentCosts <= 50000;
+                } else (insuranceType === 'Long Term Insurance')
+                {
+                    return treatmentCosts > 50000  || treatmentCosts <= 100000;
+                }
+            });
+
+            return insuranceClaims;
+        }
+
+        // Function to display insurance claims for a specific insurance type
+        function displayInsuranceClaimsForType(insuranceType, data) {
+            const insuranceClaimsDiv = document.getElementById('insuranceClaims');
+            insuranceClaimsDiv.innerHTML = '';
+
+            const insuranceData = generateInsuranceClaims(insuranceType, data);
+
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>Patient Name</th>
+                        <th>Treatment Costs</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    ${insuranceData.map(patient => `
+                        <tr>
+                            <td>${patient.patient_id}</td>
+                            <td>${patient.Patient_name}</td>
+                            <td>$${patient.Patient_Treatment_Costs}</td>
+                           
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            insuranceClaimsDiv.appendChild(table);
+        }
+
+        // Function to select insurance type and display claims
+        function selectInsurance(insuranceType) {
+            if (healthcare_csv_dataset.length > 0) {
+                displayInsuranceClaimsForType(insuranceType, healthcare_csv_dataset);
+            } else {
+                alert('Dataset not loaded!');
+            }
+        }
+
+        function searchPatient() {
+            const searchValue = document.getElementById('searchPatient').value.toLowerCase();
+            if (healthcare_csv_dataset.length > 0) {
+                const patient = healthcare_csv_dataset.find(patient => patient.Patient_name.toLowerCase().includes(searchValue));
+
+                if (patient) {
+                    displayInsuranceClaimsForType(patient.Insurance_Type, [patient]);
+                } else {
+                    alert('Patient not found!');
+                }
+            } else {
+                alert('Dataset not loaded!');
+            }
+        }
+
+        // Add event listener for file upload
+        document.getElementById('csvFile').addEventListener('change', handleFileUpload);
+    </script>
+</body>
+</html>
