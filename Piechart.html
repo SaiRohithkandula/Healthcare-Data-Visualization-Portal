@@ -280,6 +280,34 @@
             }
             return colors;
         }
+         function readChart(chartTitle, chartData) {
+            const utterance = new SpeechSynthesisUtterance(chartTitle + '. ' + chartData);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Function to read website description aloud
+        function readWebsiteDescription() {
+            const description = 'This is a Healthcare Data Visualization Portal. This tab explains about Pie chart distribution of various graphs which involves Gender Distribution,Age Distribution and disease distribution.';
+            const utterance = new SpeechSynthesisUtterance(description);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Event listener to trigger voice-over on 'L' key press for website description
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'l' || event.key === 'L') {
+                readWebsiteDescription();
+            }
+        });
+
+        // Event listener to trigger voice-over on 'G' key press for chart data
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'g' || event.key === 'G') {
+     
+                readChart('Patient Age Distribution', 'Your Age Chart Data');
+                readChart('Gender Distribution', 'Your Gender Chart Data');
+                readChart('Patient Disease Distribution', 'Your Disease Chart Data');
+            }
+        });
     </script>
 
 </body>
