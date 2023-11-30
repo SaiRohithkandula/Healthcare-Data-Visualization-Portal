@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Data Visualization Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('medical_background.jpeg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #333;
+        }
+        .logo img {
+            width: 100px;
+            height: 100px;
+        }
+        .data-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .input-btn-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .btn-container {
+            margin-top: 1rem;
+        }
+        .chart-container {
+            max-width: 80%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="logo.png" alt="Logo">
+    </div>
+
+    <div class="data-container">
+        <div class="input-btn-container">
+            <input type="file" id="csvFile" accept=".csv">
+            <div class="btn-container">
+                <button onclick="handleFile_bar()">Line chart</button>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="medicineChart" width="500" height="500"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="ageChart" width="400" height="400"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="genderPieChart" width="400" height="400"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="diseasePieChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/Chart.js"></script>
+
+    <script>
+        function handleFile_bar() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                const content = event.target.result;
+                processData(content, file.name);
+            };
+
+            reader.readAsText(file);
+        }
+
+        function processData(content, fileName) {
+            const csvRows = content.split('\n');
+            const headers = csvRows[0].split(',');
+            const data = csvRows.slice(1).map(row => {
+                const rowData = row.split(',');
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = rowData[index];
+                });
+                return obj;
+            });
+
+            const medicineCounts = {};
+            data.forEach(item => {
+                const medicine = item['Medicine'];
+                medicineCounts[medicine] = (medicineCounts[medicine] || 0) + 1;
+            });
+
+            const medicineLabels = Object.keys(medicineCounts);
+            const medicineData = medicineLabels.map(label => medicineCounts[label]);
+
+            const backgroundColors = generateColors(medicineLabels.length);
+
+            const medicineCanvas = document.getElementById('medicineChart').getContext('2d');
+            const stackedBarChart = new Chart(medicineCanvas, {
+                type: 'line',
+                steppedLine: true,
+                data: {
+                    labels: medicineLabels,
+                    datasets: [{
+                        label: 'Medicine Distribution',
+                        data: medicineData,
+                        backgroundColor: backgroundColors,
+                        borderColor: backgroundColors,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Medicine Distribution'
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                fontSize: 14
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 1,
+                                fontSize: 14
+                            }
+                        }]
+                    }
+                }
+            });
+        
+        const ageCounts = {
+                '10-20': 0,
+                '20-30': 0,
+                '30-40': 0,
+                '40-50': 0,
+                '50-60': 0,
+                '60-70': 0,
+                '70-80': 0,
+                '80-90': 0,
+                '90-100': 0,
+                '>100': 0
+            };
+
+            data.forEach(item => {
+                const age = parseInt(item['Age']);
+
+                if (age >= 10 && age < 20) {
+                    ageCounts['10-20']++;
+                } else if (age >= 20 && age < 30) {
+                    ageCounts['20-30']++;
+                } else if (age >= 30 && age < 40) {
+                    ageCounts['30-40']++;
+                } else if (age >= 40 && age < 50) {
+                    ageCounts['40-50']++;
+                } else if (age >= 50 && age < 60) {
+                    ageCounts['50-60']++;
+                } else if (age >= 60 && age < 70) {
+                    ageCounts['60-70']++;
+                } else if (age >= 70 && age < 80) {
+                    ageCounts['70-80']++;
+                } else if (age >= 80 && age < 90) {
+                    ageCounts['80-90']++;
+                } else if (age >= 90 && age <= 100) {
+                    ageCounts['90-100']++;
+                } else {
+                    ageCounts['>100']++;
+                }
+            });
+
+            const ageLabels = Object.keys(ageCounts);
+            const ageData = Object.values(ageCounts);
+            const backgroundColors1 = generateColors1(ageLabels.length);
+            const ageCanvas = document.getElementById('ageChart').getContext('2d');
+            const ageBarChart = new Chart(ageCanvas, {
+                type: 'line',
+                tension: 0.4,
+                data: {
+                    labels: ageLabels,
+                    datasets: [{
+                        label: 'Patient Age Distribution',
+                        data: ageData,
+                        backgroundColor: backgroundColors1,
+                        borderColor: backgroundColors1,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Patient Age Distribution'
+                    },
+                    scales: {
+                        xAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Age Groups'
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Number of Patients'
+                            },
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+            const males = data.filter(item => item['gender'] === 'M');
+            const females = data.filter(item => item['gender'] === 'F');
+
+            // Count male and female patients
+            const maleCount = males.length;
+            const femaleCount = females.length;
+
+            // Create the pie chart for gender distribution
+            const genderCanvas = document.getElementById('genderPieChart').getContext('2d');
+            const genderPieChart = new Chart(genderCanvas, {
+                type: 'line',
+                borderDash: [5, 5],
+                data: {
+                    labels: ['Male', 'Female'],
+                    datasets: [{
+                        label: 'Gender Distribution',
+                        data: [maleCount, femaleCount],
+                        backgroundColor: backgroundColors1,
+                        borderColor: backgroundColors1,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Gender Distribution'
+                    },
+                    plugins: {
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value) => {
+                                return value + ' patients';
+                            }
+                        }
+                    }
+                }
+            });
+            const diseaseCounts = {};
+            data.forEach(item => {
+                const disease = item['Patient_Disease'];
+                diseaseCounts[disease] = (diseaseCounts[disease] || 0) + 1;
+            });
+
+            const diseaseLabels = Object.keys(diseaseCounts);
+            const diseaseData = diseaseLabels.map(label => diseaseCounts[label]);
+
+            // Create the pie chart with percentages in tooltips
+            const diseaseCanvas = document.getElementById('diseasePieChart').getContext('2d');
+            const verticalBarChart = new Chart(diseaseCanvas, {
+                type: 'line',
+                cubicInterpolationMode: 'monotone',                
+                data: {
+                    labels: diseaseLabels,
+                    datasets: [{
+                        label: 'Patient Disease Distribution',
+                        data: diseaseData,
+                        backgroundColor: backgroundColors1,
+                        borderColor: backgroundColors1,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Patient Disease Distribution'
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: (tooltipItem, data) => {
+                                const dataset = data.datasets[0];
+                                const total = dataset.data.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                                const currentValue = dataset.data[tooltipItem.index];
+                                const percentage = ((currentValue / total) * 100).toFixed(2) + "%";
+                                return `${data.labels[tooltipItem.index]}: ${currentValue} (${percentage})`;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateColors(numColors) {
+            const colors = [];
+            for (let i = 0; i < numColors; i++) {
+                const r = Math.floor(Math.random() * 256);
+                const g = Math.floor(Math.random() * 256);
+                const b = Math.floor(Math.random() * 256);
+                colors.push(`rgba(${r}, ${g}, ${b}, 1)`);
+            }
+            return colors;
+        }
+        function generateColors1(numColors) {
+            const colors = [];
+            for (let i = 0; i < numColors; i++) {
+                const r = Math.floor(Math.random() * 256);
+                const g = Math.floor(Math.random() * 256);
+                const b = Math.floor(Math.random() * 256);
+                colors.push(`rgba(${r}, ${g}, ${b}, 1)`);
+            }
+            return colors;
+        }
+
+        function readChart(chartTitle, chartData) {
+            const utterance = new SpeechSynthesisUtterance(chartTitle + '. ' + chartData);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Function to read website description aloud
+        function readWebsiteDescription() {
+            const description = 'This is a Healthcare Data Visualization Portal. Press L for website description or G for chart data.';
+            const utterance = new SpeechSynthesisUtterance(description);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Event listener to trigger voice-over on 'L' key press for website description
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'l' || event.key === 'L') {
+                readWebsiteDescription();
+            }
+        });
+
+        // Event listener to trigger voice-over on 'G' key press for chart data
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'g' || event.key === 'G') {
+                readChart('Medicine Distribution', 'Your Medicine Line Chart Data');
+                readChart('Patient Age Distribution', 'Your Age Line Chart Data');
+                readChart('Gender Distribution', 'Your Gender Line Chart Data');
+                readChart('Patient Disease Distribution', 'Your Disease Line Chart Data');
+            }
+        });
+
+    </script>
+</body>
+</html>
