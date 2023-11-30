@@ -62,6 +62,27 @@
             <a href="Hospital Disclaimer_Spanish.pdf" download>Haga clic aquí para descargar</a>
         </div>
     </div>
+    <script>
+        document.getElementById('csvFile').addEventListener('change', handleFileUpload);
+        function readChart(chartTitle, chartData) {
+            const utterance = new SpeechSynthesisUtterance(chartTitle + '. ' + chartData);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Function to read website description aloud
+        function readWebsiteDescription() {
+            const description = 'This is Resources Tab . Patients can download the hospital disclaimer forms and covid 19 forms from the resources tab. Hospital Resources. Download Covid 19 Information Form. Download Hospital Disclaimer Form.';
+            const utterance = new SpeechSynthesisUtterance(description);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Event listener to trigger voice-over on 'L' key press for website description
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'l' || event.key === 'L') {
+                readWebsiteDescription();
+            }
+        });
+    </script>
     <footer>
         <p>&copy; 2023 Healthcare Data Visualization Portal</p>
     </footer>
