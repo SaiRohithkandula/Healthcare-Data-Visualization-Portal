@@ -156,6 +156,28 @@
                 tableBody.innerHTML += row;
             });
         }
+         function readChart(chartTitle, chartData) {
+            const utterance = new SpeechSynthesisUtterance(chartTitle + '. ' + chartData);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Function to read website description aloud
+        function readWebsiteDescription() {
+            const description = 'This is Patient Records Tab which shows the details of the patient. Patient Records. Search Records. Please Enter Your Name.';
+            const utterance = new SpeechSynthesisUtterance(description);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Event listener to trigger voice-over on 'L' key press for website description
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'l' || event.key === 'L') {
+                readWebsiteDescription();
+            }
+        });
+
+        
+
     </script>
+    
 </body>
 </html>
