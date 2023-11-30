@@ -293,6 +293,24 @@ function handlePaymentOption(paymentMethod) {
 
         // Add event listener for file upload
         document.getElementById('csvFile').addEventListener('change', handleFileUpload);
+        function readChart(chartTitle, chartData) {
+            const utterance = new SpeechSynthesisUtterance(chartTitle + '. ' + chartData);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Function to read website description aloud
+        function readWebsiteDescription() {
+            const description = 'This is Billing Tab. Patients Can pay the bills. Billing Information. Choose File. Enter Patient name. Pay Bill';
+            const utterance = new SpeechSynthesisUtterance(description);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Event listener to trigger voice-over on 'L' key press for website description
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'l' || event.key === 'L') {
+                readWebsiteDescription();
+            }
+        });
         
     </script>
 </body>
